@@ -16,5 +16,10 @@ class UserRepository {
         return User::where('email', '=', $email)->first();
     }
 
+    public function getIdByUser(int $id) : ?User
+    {
+        return User::where('username', '=', $username)->first();
+    }
+
 
 }

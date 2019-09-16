@@ -89,4 +89,9 @@ class AuthController extends Controller
         return response()->json(['token' => $token]);
     }
 
+    private function editPassword(Request $request, User $user)
+    {
+
+    }
+
 }
