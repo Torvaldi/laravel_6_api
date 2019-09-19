@@ -71,7 +71,7 @@ class AuthController extends Controller
 
         // get user from database
         $user = $this->userRepository->getUserByUsername($request->input('username'));
-
+    
         // check user exist
         if($user === null){
             return response()->json(['error' => 'This username does not exist']);
@@ -83,15 +83,20 @@ class AuthController extends Controller
         }
 
         // genere token
-        $token = $this->jwt->genereToken($user->username, $user->password);
+        $token = $this->jwt->genereToken($user->id, $user->username, $user->password);
 
         // return token
         return response()->json(['token' => $token]);
     }
 
-    private function editPassword(Request $request, User $user)
+    private function editPassword(Request $request)
     {
+        $request->validate([
+            'password' => 'required',
+        ]);
 
+        $user = $this->userRepository->getUserByUsername($request->input('username'));
+        echo $user;
     }
 
 }

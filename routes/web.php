@@ -22,18 +22,29 @@ Route::post('/api/login', 'AuthController@login');
 // Auth route with auth
 Route::group(['middleware' => ['token']], function(){
 
-    Route::post('/api/password/{name}', 'AuthController@editPassword');
+    Route::post('/api/password', 'AuthController@editPassword');
     
-    //Game route
-    Route::post('/game.store', 'GameController@store');
-    Route::post('/game.store.join', 'GameController@storeUserGame');
-    Route::get('/game.index.status', 'GameController@indexGameStatus');
-    Route::get('/game.index.running', 'GameController@indexGameRunning');
-    Route::get('/game.show', 'GameController@getGame');
-    Route::get('/game.user.show', 'GameController@getUserByGame');
-    Route::post('/game.status', 'GameController@changeGameStatus');
-    Route::post('/game.user.leave', 'GameController@userLeaveGame');
+/* Original_Name
+* Create the game
+* Route::post('/api/game.store', 'LobbyController@createGame')*/
+    Route::post('/api/game.create', 'LobbyController@createGame');
+    
+    /* Original_Name
+    * For join a game
+    * Route::post('/api/store.join', 'LobbyController@gameJoin')*/
+    Route::post('/api/game.join', 'LobbyController@gameJoin');
+
+    /* Original_Name
+    * For join a game
+    * Route::post('/api/game.index.status', 'LobbyController@indexGameStatus')*/
+    Route::get('/api/game.index.status', 'LobbyController@indexGameStatus');
+
+    Route::get('/api/game.index.running', 'LobbyController@indexGameRunning');
+    Route::get('/api/game.show', 'GameController@getGame');
+    Route::get('/api/game.user.show', 'GameController@getUserByGame');
+    Route::post('/api/game.status', 'GameController@changeGameStatus');
+    Route::post('/api/game.user.leave', 'GameController@userLeaveGame');
 
     //Anime route
-    Route::get('/anime.index', 'AnimeController@index');
+    Route::get('/api/anime.index', 'AnimeController@index');
 });
