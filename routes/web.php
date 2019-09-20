@@ -24,26 +24,24 @@ Route::group(['middleware' => ['token']], function(){
 
     Route::post('/api/password', 'AuthController@editPassword');
     
-/* Original_Name
-* Create the game
-* Route::post('/api/game.store', 'LobbyController@createGame')*/
+    // /api/game.store
     Route::post('/api/game.create', 'LobbyController@createGame');
-    
-    /* Original_Name
-    * For join a game
-    * Route::post('/api/store.join', 'LobbyController@gameJoin')*/
+    // /api/store.join
     Route::post('/api/game.join', 'LobbyController@gameJoin');
+    // /api/game.index.status
+    Route::get('/api/game.status', 'LobbyController@getGamesByStatus');
+    // /api/game.index.running
+    Route::get('/api/game.user.running', 'LobbyController@getUserRunningGame');
 
-    /* Original_Name
-    * For join a game
-    * Route::post('/api/game.index.status', 'LobbyController@indexGameStatus')*/
-    Route::get('/api/game.index.status', 'LobbyController@indexGameStatus');
+    // GAME
+    // delete /api/game.show
 
-    Route::get('/api/game.index.running', 'LobbyController@indexGameRunning');
-    Route::get('/api/game.show', 'GameController@getGame');
-    Route::get('/api/game.user.show', 'GameController@getUserByGame');
-    Route::post('/api/game.status', 'GameController@changeGameStatus');
-    Route::post('/api/game.user.leave', 'GameController@userLeaveGame');
+    // /api/game.user.show
+    Route::get('/api/game.user', 'GameController@getGamePlayers');
+    // post
+    Route::put('/api/game.status', 'GameController@updateGameStatus');
+    // post
+    Route::delete('/api/game.user.leave', 'GameController@userLeaveGame');
 
     //Anime route
     Route::get('/api/anime.index', 'AnimeController@index');
