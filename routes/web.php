@@ -20,10 +20,10 @@ Route::post('/api/register', 'AuthController@register');
 Route::post('/api/login', 'AuthController@login');
 
 // Auth route with auth
+
 Route::group(['middleware' => ['token']], function(){
 
     Route::post('/api/password', 'AuthController@editPassword');
-    
 /* Original_Name
 * Create the game
 * Route::post('/api/game.store', 'LobbyController@createGame')*/

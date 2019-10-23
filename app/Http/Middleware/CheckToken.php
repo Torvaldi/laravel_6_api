@@ -16,7 +16,7 @@ class CheckToken
      */
     public function handle($request, Closure $next)
     {
-        $token = $request->header('Authorization');
+        $token = $request->header('token');
         try {
             $result = JWT::decode($token, env('JWTKEY'), array('HS256'));
         } catch (\Exception $e) {

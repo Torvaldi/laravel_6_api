@@ -18,10 +18,10 @@ class JwtService {
         return JWT::encode($data, env('JWTKEY'));
     }
 
-    public function getAuthUser(Request $request) : User
+    public function getAuthUser(Request $request) : object
     {
 
-        $token = $request->header('Authorization');
+        $token = $request->header('token');
 
         try {
             $tokenDecoded = JWT::decode($token, env('JWTKEY'), array('HS256'));

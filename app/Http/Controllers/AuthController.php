@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\JwtService;
+use \Firebase\JWT\JWT;
 use Illuminate\Support\Facades\Hash;
 use App\User;
 use App\Repositories\UserRepository;
+use App\Http\Resources\User as UserResource;
 
 class AuthController extends Controller
 {
@@ -89,14 +91,30 @@ class AuthController extends Controller
         return response()->json(['token' => $token]);
     }
 
-    private function editPassword(Request $request)
+    public function editPassword(Request $request)
     {
-        $request->validate([
-            'password' => 'required',
-        ]);
 
         $user = $this->userRepository->getUserByUsername($request->input('username'));
-        echo $user;
+
+        $request->validate([
+            'oldPassword' => 'required',
+            'newPassword' => 'required',
+            'confirmNewPassword' => 'required',
+            'token' => 'required',
+        ]);
+
+        if (Hash::check($request->input('oldPassword'), $user->password)) {
+            return 'ok';
+        }
+
+        //$token = $this->jwt->getAuthUser($request);
+        /*if ($request->newPassword === $request->confirmNewPassword ) {
+           
+        }*/
+       //je comprend pasl e systeme de hash
+        
+        return new UserResource($user);
+
     }
 
 }
