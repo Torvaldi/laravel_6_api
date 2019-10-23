@@ -111,7 +111,7 @@ class AuthController extends Controller
         /*if ($request->newPassword === $request->confirmNewPassword ) {
            
         }*/
-       //je comprend pasl e systeme de hash
+       //je comprend pas le systeme de hash
         
         return new UserResource($user);
 
