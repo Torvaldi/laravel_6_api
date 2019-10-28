@@ -4,16 +4,21 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\JWTService;
+use Symfony\Component\HttpFoundation\Response;
 
 
 class LobbyController extends Controller {
 
-    public function __construct(JWTService $jwt){
+    public function __construct(JWTService $jwt)
+    {
         $this->jwt = $jwt;
     }
     
-    //(/game.store)
-    public function createGame(Request $request){
+    /**
+     * Auth user create a game
+     */
+    public function createGame(Request $request) : Response
+    {
         // get auth user
         $user = $this->jwt->getAuthUser($request);
 
@@ -25,18 +30,30 @@ class LobbyController extends Controller {
         
     }
 
-    //(/game.store.join)
-    public function gameJoin(Request $request){
-
+    /**
+     * Auth user join a game
+     */
+    public function gameJoin(Request $request) : Response
+    {
+        //
     }
 
-    //(/game.index.status)
-    public function indexGameStatus(Request $request){
-
+    /**
+     * Get games by status
+     * 1 : Waiting for player
+     * 2: Running
+     * 3: Finish
+     */
+    public function getGamesByStatus(Request $request) : Response
+    {
+        //
     }
 
-    //(/game.index.running)
-    public function indexGameRunning(Request $request){
-
+    /**
+     * Get current game of the auth user
+     */
+    public function getUserRunningGame(Request $request) : Response
+    {
+        //
     }
 }
