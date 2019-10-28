@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Services\JWTService;
 
+
 class LobbyController extends Controller {
 
     public function __construct(JWTService $jwt){
@@ -17,7 +18,6 @@ class LobbyController extends Controller {
         $user = $this->jwt->getAuthUser($request);
 
         // check if user is not already in a game
-        
         
         // validate request
 

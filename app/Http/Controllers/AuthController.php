@@ -13,6 +13,8 @@ use App\Http\Resources\User as UserResource;
 class AuthController extends Controller
 {
     public $jwt;
+    private $userData;
+    private $passwordHash;
 
     public function __construct(JwtService $jwt, UserRepository $userRepository)
     {
@@ -94,8 +96,6 @@ class AuthController extends Controller
     public function editPassword(Request $request)
     {
 
-        $user = $this->userRepository->getUserByUsername($request->input('username'));
-
         $request->validate([
             'oldPassword' => 'required',
             'newPassword' => 'required',
@@ -103,17 +103,23 @@ class AuthController extends Controller
             'token' => 'required',
         ]);
 
-        if (Hash::check($request->input('oldPassword'), $user->password)) {
-            return 'ok';
-        }
+        $this->userData = $this->userRepository->getUserByUsername($request->input('username'));
+        $this->passwordHash = Hash::make($request->input('newPassword'));
 
-        //$token = $this->jwt->getAuthUser($request);
-        /*if ($request->newPassword === $request->confirmNewPassword ) {
-           
-        }*/
-       //je comprend pas le systeme de hash
-        
-        return new UserResource($user);
+            if ($request->newPassword === $request->confirmNewPassword) {
+                
+                if (Hash::check($request->input('oldPassword'), $this->userData->password)) {
+
+                    $this->userData->password = $this->passwordHash;
+                    $this->userData->save();
+
+                    return new UserResource($this->userData);
+                }
+
+                return 'Old Password Invalid';
+            }
+            
+            return 'Confirm password not valid';
 
     }
 
