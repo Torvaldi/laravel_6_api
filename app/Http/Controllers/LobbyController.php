@@ -5,13 +5,14 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Services\JWTService;
 use Symfony\Component\HttpFoundation\Response;
-
+use App\Repositories\GameRepository;
 
 class LobbyController extends Controller {
 
-    public function __construct(JWTService $jwt)
+    public function __construct(JWTService $jwt, GameRepository $gameRepository)
     {
         $this->jwt = $jwt;
+        $this->gameRepository = $gameRepository;
     }
     
     /**
