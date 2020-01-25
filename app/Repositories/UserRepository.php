@@ -16,9 +16,15 @@ class UserRepository {
         return User::where('email', '=', $email)->first();
     }
 
-    public function getIdByUser(int $id) : ?User
+    public function getUserById(int $id) : ?User
     {
-        return User::where('username', '=', $username)->first();
+        return User::where('id', '=', $id)->first();
+    }
+
+    public function getUserPassword(int $id) : string
+    {
+        $user = User::select('password')->where('id', '=', $id)->first();
+        return $user->password;
     }
 
 

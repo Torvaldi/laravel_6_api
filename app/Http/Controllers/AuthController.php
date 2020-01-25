@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use App\User;
 use App\Repositories\UserRepository;
 use App\Http\Resources\User as UserResource;
+use Validator;
 
 class AuthController extends Controller
 {
@@ -22,6 +23,11 @@ class AuthController extends Controller
         $this->userRepository = $userRepository;
     }
 
+    /**
+     * @param Request $request, username, password, password_confirmation, email
+     * @return json user data in json, (id, name and email)
+     * Route : /api/register
+     */
     public function register(Request $request)
     {
         // check password confirmation
@@ -62,9 +68,13 @@ class AuthController extends Controller
         $user->email= $email;
         $user->save();
 
-        return response()->json(['user' => $user]);
+        return response()->json($user);
     }
 
+    /**
+     * @param Request $request (username, password)
+     * Route api/login
+     */
     public function login(Request $request)
     {
         // validate request
@@ -93,34 +103,47 @@ class AuthController extends Controller
         return response()->json(['token' => $token]);
     }
 
+    /**
+     * @param Request $request, oldPassword, newPassword, confirmNewPassword
+     * Route api/password
+     */
     public function editPassword(Request $request)
     {
+        $rules = [
+            'oldPassword' => 'required|string|min:4|max:10',
+            'newPassword' => 'required|string|min:4|max:10',
+            'confirmNewPassword' => 'required|string|min:4|max:10',
+        ];
 
-        $request->validate([
-            'oldPassword' => 'required',
-            'newPassword' => 'required',
-            'confirmNewPassword' => 'required',
-            'token' => 'required',
-        ]);
+        $validator = Validator::make($request->all(), $rules);
 
-        $this->userData = $this->userRepository->getUserByUsername($request->input('username'));
-        $this->passwordHash = Hash::make($request->input('newPassword'));
+        if($validator->fails()){
+            return response()->json(["error" => $validator->errors()->all()], 400);
+        }
+        
+        // check if new password is the same as the confirmation password
+        if ($request->newPassword != $request->confirmNewPassword){
+            return response()->json(['error' => 'Password and password confirmation does not match']);
+        }
 
-            if ($request->newPassword === $request->confirmNewPassword) {
-                
-                if (Hash::check($request->input('oldPassword'), $this->userData->password)) {
+        // retrive user with token
+        $userId = $this->jwt->getAuthUserId($request);
+        $currentPassword = $this->userRepository->getUserPassword($userId);
 
-                    $this->userData->password = $this->passwordHash;
-                    $this->userData->save();
+        // check if the old password given by the user is the same as the current password
+        if (Hash::check($request->input('oldPassword'), $currentPassword) === false){
+            return response()->json(['error' => 'You password is incorrect']);
+        }
 
-                    return new UserResource($this->userData);
-                }
+        // hash the new password
+        $passwordHash = Hash::make($request->input('newPassword'));
 
-                return 'Old Password Invalid';
-            }
-            
-            return 'Confirm password not valid';
+        // upadate new password
+        $user = User::find($userId);
+        $user->password = $passwordHash;
+        $user->save();
 
+        return response()->json($user);
     }
 
 }

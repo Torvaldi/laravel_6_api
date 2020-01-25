@@ -18,9 +18,8 @@ class JwtService {
         return JWT::encode($data, env('JWTKEY'));
     }
 
-    public function getAuthUser(Request $request) : object
+    public function getAuthUserId(Request $request) : int
     {
-
         $token = $request->header('token');
 
         try {
@@ -29,6 +28,6 @@ class JwtService {
             return array('error' => 'Invalid token'); 
         }
 
-        return $tokenDecoded;
+        return $tokenDecoded->id;
     }
 }
