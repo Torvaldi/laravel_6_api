@@ -3,13 +3,18 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Services\JWTService;
+use App\Services\JwtService;
 use Symfony\Component\HttpFoundation\Response;
 use App\Repositories\GameRepository;
+use App\User;
+use Validator;
 
 class LobbyController extends Controller {
 
-    public function __construct(JWTService $jwt, GameRepository $gameRepository)
+    public $jwt;
+    public $gameRepository;
+
+    public function __construct(JwtService $jwt, GameRepository $gameRepository)
     {
         $this->jwt = $jwt;
         $this->gameRepository = $gameRepository;
@@ -18,17 +23,33 @@ class LobbyController extends Controller {
     /**
      * Auth user create a game
      */
-    public function createGame(Request $request) : Response
+    public function createGame(Request $request): Response
     {
         // get auth user
-        $user = $this->jwt->getAuthUser($request);
+        $creatorId = $this->jwt->getAuthUserId($request);
 
         // check if user is not already in a game
+        if($this->gameRepository->isUserInGame($creatorId) === true){
+            return response()->json(['error' => ['Your are already in a game']], 400);
+        }
         
         // validate request
+        $rules = [
+            'level' => 'required|numeric|min:1|max:3',
+            'answer' => 'required|numeric|min:5|max:15',
+            'score_to_win' => 'required|numeric|min:10|max:500'
+        ];
 
-        // save date to database
-        
+        $validator = Validator::make($request->all(), $rules);
+
+        if($validator->fails()){
+            return response()->json(["error" => $validator->errors()->all()], 400);
+        }
+
+        // create a new game
+        $game = $this->gameRepository->createGame($creatorId, $request);
+
+        return response()->json($game->getGame(), 200);
     }
 
     /**
