@@ -9,6 +9,7 @@ use App\Repositories\GameRepository;
 use App\User;
 use Validator;
 
+
 class LobbyController extends Controller {
 
     public $jwt;
@@ -57,7 +58,27 @@ class LobbyController extends Controller {
      */
     public function gameJoin(Request $request) : Response
     {
-        //
+        // Validator
+        $rules = ['game_id' => 'required|numeric'];
+        $validator = Validator::make($request->all(), $rules);
+
+        if($validator->fails()){
+            return response()->json(["error" => $validator->errors()->all()], 400);
+        }
+
+        // get auth user and game
+        $userId = $this->jwt->getAuthUserId($request);
+        $gameId = $request->input('game_id');
+        
+        if($this->gameRepository->isGameJoinable($gameId) === false){
+            return response()->json(["error" => 'This game does not exist or is already finish'], 400);
+        }
+
+        // save user to game database
+        $this->gameRepository->addUserToGame($userId, $gameId);
+
+        // send back the game id the user joined
+        return response()->json(['gameId' => $gameId], 200);
     }
 
     /**

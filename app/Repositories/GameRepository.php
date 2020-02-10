@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Game;
 use App\User;
 use Illuminate\Http\Request;
+use App\GameUser;
 
 class GameRepository {
 
@@ -31,6 +32,33 @@ class GameRepository {
         $game->user()->save(User::find($creatorId)); // save to the relationship table
 
         return $game;
+    }
+
+    public function addUserToGame(int $userId, int $gameId) : GameUser
+    {
+        $gameUser = new GameUser();
+        $gameUser->game_id = $gameId;
+        $gameUser->user_id = $userId;
+        $gameUser->score = 0;
+        $gameUser->save();
+
+        return $gameUser;
+    }
+
+    public function isGameJoinable($gameId) : bool
+    {
+        $game = Game::find($gameId);
+        if($game === null){
+            return false;
+        }
+
+        $gameJoinable = Game::find($gameId)->where('status', '!=', 3);
+
+        if($gameJoinable === null){
+            return false;
+        }
+
+        return true;
     }
 
 }

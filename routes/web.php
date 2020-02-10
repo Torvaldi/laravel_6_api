@@ -25,7 +25,7 @@ Route::group(['middleware' => ['token']], function(){
 
     Route::post('/api/password', 'AuthController@editPassword');
     
-    // /api/game.store
+    // /api/game.store ok
     Route::post('/api/game.create', 'LobbyController@createGame');
     // /api/store.join
     Route::post('/api/game.join', 'LobbyController@gameJoin');
