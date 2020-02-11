@@ -9,7 +9,6 @@ use App\Repositories\GameRepository;
 use App\User;
 use Validator;
 
-
 class LobbyController extends Controller {
 
     public $jwt;
@@ -87,9 +86,21 @@ class LobbyController extends Controller {
      * 2: Running
      * 3: Finish
      */
-    public function getGamesByStatus(Request $request) : Response
+    public function getGamesByStatus(Request $request) 
     {
-        //
+        // Validator rules
+        $rules = ['id' => 'required|numeric|min:1|max:3'];
+        $validator = Validator::make($request->all(), $rules);
+
+        if($validator->fails()){
+            return response()->json(["error" => $validator->errors()->all()], 400);
+        }
+
+        // get game by status
+        $statusId = $request->input('id');
+        $games = $this->gameRepository->getGameByStatus($statusId);
+
+        return response()->json($games, 200);
     }
 
     /**
@@ -97,6 +108,13 @@ class LobbyController extends Controller {
      */
     public function getUserRunningGame(Request $request) : Response
     {
-        //
+        // get user id
+        $userId = $this->jwt->getAuthUserId($request);
+
+        // get user running game
+        $runningGame = $this->gameRepository->getUserRunningGame($userId);
+        
+        // send back the game
+        return response()->json($runningGame, 200);
     }
 }
