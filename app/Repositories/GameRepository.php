@@ -140,4 +140,11 @@ class GameRepository {
         return $game->status;
     }
 
+    /**
+     * @return int, return the number of row deleted
+     */
+    public function removeUserFromGame(int $userId, int $gameId) : int
+    {
+        return DB::table('game_users')->where('game_id', '=', $gameId)->where('user_id', '=', $userId)->delete();
+    }
 }
