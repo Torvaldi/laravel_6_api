@@ -11,9 +11,6 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
 
 // Auth route without auth
 Route::post('/api/register', 'AuthController@register');
@@ -44,6 +41,6 @@ Route::group(['middleware' => ['token']], function(){
     // post Ok
     Route::delete('/api/game.user.leave', 'GameController@userLeaveGame');
 
-    //Anime route
+    //Anime route ok
     Route::get('/api/anime.index', 'AnimeController@index');
 });
