@@ -13,9 +13,15 @@ class GameRepository {
 
     public function isUserInGame($userId) : bool
     {
-        $totalUserCurrentgames = Game::select('id')->where('user_creator_id', $userId)->where('status', '!=', 3)->count();
+        //$totalUserCurrentgames = GameUser::select('id')->where('user_id', $userId)->where('status', '!=', 3)->count();
+        $sql = "SELECT game_user.user_id
+        FROM games
+        JOIN game_user ON game_user.game_id = games.id
+        WHERE games.status != 3";
 
-        if($totalUserCurrentgames > 0){
+        $totalUserCurrentgames = DB::select($sql);
+
+        if(count($totalUserCurrentgames) > 0){
             return true;
         }
         return false;
@@ -29,9 +35,12 @@ class GameRepository {
         $game->level = $request->input('level');
         $game->answer = $request->input('answer');
         $game->score_to_win = $request->input('score_to_win');
-        $game->save(); // save to the main game table
+        $game->save();
 
-        $game->user()->save(User::find($creatorId)); // save to the relationship table
+         // save to the relationship table
+        $user = User::find($creatorId);
+        $game->user()->save($user, ['score' => 0]);
+        
 
         return $game;
     }
@@ -66,9 +75,9 @@ class GameRepository {
     public function getGameByStatus(int $statusId) : array
     {
         $sql = "SELECT 
-        games.id, user_creator_id, username as creator, status, level, answer, games.created_at, games.updated_at, score_to_win, count(game_users.user_id) as total_player
+        games.id, user_creator_id, username as creator, status, level, answer, games.created_at, games.updated_at, score_to_win, count(game_user.user_id) as total_player
         FROM games
-        JOIN game_users ON game_users.game_id = games.id
+        JOIN game_user ON game_user.game_id = games.id
         JOIN users ON users.id = games.user_creator_id
         WHERE games.status = ?
         GROUP BY games.id
@@ -80,15 +89,15 @@ class GameRepository {
         return $games;
     }
 
-    public function getUserRunningGame(int $userId) : array
+    public function getUserRunningGame(int $userId) : ?array
     {
-        $sql = "SELECT games.id, username as creator, level, answer, score_to_win, games.created_at, games.updated_at, status, count(game_users.user_id) as total_player
-        FROM game_users
-        JOIN games ON games.id = game_users.game_id
+        $sql = "SELECT games.id, username as creator, level, answer, score_to_win, games.created_at, games.updated_at, status, count(game_user.user_id) as total_player
+        FROM game_user
+        JOIN games ON games.id = game_user.game_id
         JOIN users ON users.id = games.user_creator_id
         WHERE games.status != 3 AND games.id IN (
             SELECT game_id 
-            FROM game_users
+            FROM game_user
             WHERE user_id = ?
         )
         GROUP BY id
@@ -96,8 +105,8 @@ class GameRepository {
 
         $games = DB::select($sql, [$userId]);
 
-        if(count($games) < 0){
-            return [];
+        if(count($games) <= 0){
+            return null;
         }
         // get_object_vars, transform stdcladd to array
         return get_object_vars($games[0]); // only send back one game, the last the most recent one
@@ -111,8 +120,8 @@ class GameRepository {
     public function getUserOfTheGame($gameId) : array
     {
         $sql = "SELECT users.id, username 
-        FROM game_users
-        JOIN users ON users.id = game_users.user_id
+        FROM game_user
+        JOIN users ON users.id = game_user.user_id
         WHERE game_id = ?";
 
         $users = DB::select($sql, [$gameId]);
@@ -145,6 +154,6 @@ class GameRepository {
      */
     public function removeUserFromGame(int $userId, int $gameId) : int
     {
-        return DB::table('game_users')->where('game_id', '=', $gameId)->where('user_id', '=', $userId)->delete();
+        return DB::table('game_user')->where('game_id', '=', $gameId)->where('user_id', '=', $userId)->delete();
     }
 }

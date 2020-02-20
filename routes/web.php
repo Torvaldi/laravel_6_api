@@ -24,10 +24,13 @@ Route::group(['middleware' => ['token']], function(){
     
     // /api/game.store ok
     Route::post('/api/game.create', 'LobbyController@createGame');
+
     // /api/store.join ok
     Route::post('/api/game.join', 'LobbyController@gameJoin');
+
     // /api/game.index.status ok
     Route::get('/api/game.status', 'LobbyController@getGamesByStatus');
+
     // /api/game.index.running ok
     Route::get('/api/game.user.running', 'LobbyController@getUserRunningGame');
 
@@ -36,8 +39,10 @@ Route::group(['middleware' => ['token']], function(){
 
     // /api/game.user.show ok
     Route::get('/api/game.user', 'GameController@getGamePlayers');
+
     // post ok
     Route::put('/api/game.status', 'GameController@updateGameStatus');
+    
     // post Ok
     Route::delete('/api/game.user.leave', 'GameController@userLeaveGame');
 
