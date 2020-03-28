@@ -17,8 +17,7 @@ class GameRepository {
         $sql = "SELECT game_user.user_id
         FROM games
         JOIN game_user ON game_user.game_id = games.id
-        WHERE games.status != 3
-        AND game_user.user_id == ?";
+        WHERE games.status != 3 AND game_user.user_id = ?";
 
         $totalUserCurrentgames = DB::select($sql, [$userId]);
 
