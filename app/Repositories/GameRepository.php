@@ -29,12 +29,14 @@ class GameRepository {
 
     public function createGame(int $creatorId, Request $request) : Game
     {
+        echo $request->input('type');
         $game = new Game();
         $game->user_creator_id = $creatorId;
         $game->status = 1;
         $game->level = $request->input('level');
         $game->answer = $request->input('answer');
         $game->score_to_win = $request->input('score_to_win');
+        $game->type = $request->input('type');
         $game->save();
 
          // save to the relationship table

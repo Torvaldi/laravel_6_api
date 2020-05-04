@@ -25,6 +25,7 @@ class LobbyController extends Controller {
      */
     public function createGame(Request $request): Response
     {
+
         // get auth user
         $creatorId = $this->jwt->getAuthUserId($request);
 
@@ -37,7 +38,8 @@ class LobbyController extends Controller {
         $rules = [
             'level' => 'required|numeric|min:1|max:3',
             'answer' => 'required|numeric|min:5|max:15',
-            'score_to_win' => 'required|numeric|min:10|max:500'
+            'score_to_win' => 'required|numeric|min:10|max:500',
+            'type' => 'required'
         ];
 
         $validator = Validator::make($request->all(), $rules);

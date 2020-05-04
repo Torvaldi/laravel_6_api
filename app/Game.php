@@ -30,6 +30,7 @@ class Game extends Model
             'level' => $this->level,
             'answer' => $this->answer,
             'scoreToWin' => $this->score_to_win,
+            'type' => $this->type,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at
         ];
