@@ -102,4 +102,27 @@ class GameController extends Controller
         // send back the game id just removed
         return response()->json(['game_id', $gameId]);
     }
+
+    public function userSaveScore(Request $request)
+    {
+        // validator
+        $validator = Validator::make($request->all(), [
+            'gameId' => 'required|numeric',
+            'players' => 'required',
+        ]);
+
+        // check if the validation succsess
+        if($validator->fails()){
+            return response()->json(["error" => $validator->errors()->all()], 400);
+        }
+
+        $gameId = $request->input('gameId');
+        $players = $request->input('players');
+
+        // save user score
+        $this->gameRepository->saveUsersScore($players, $gameId);
+
+        // send back user id
+        return response()->json(['gameId' => $gameId]); 
+    }
 }
