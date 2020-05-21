@@ -48,4 +48,6 @@ Route::group(['middleware' => ['token']], function(){
 
     //Anime route ok
     Route::get('/api/anime.index', 'AnimeController@index');
+
+    Route::put('/api/game.user.save', 'GameController@userSaveScore');
 });

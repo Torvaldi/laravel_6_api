@@ -50,5 +50,10 @@ class User extends Authenticatable
         return $this->belongsToMany(Game::class);
     }
 
+    public function getId()
+    {
+        return $this->id;
+    }
+
 
 }

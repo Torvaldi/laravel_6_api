@@ -156,4 +156,31 @@ class GameRepository {
     {
         return DB::table('game_user')->where('game_id', '=', $gameId)->where('user_id', '=', $userId)->delete();
     }
+
+    /**
+     * save users scores to the database, called at the end of a game
+     * @param array $player, an array of players, contain userName, score and rank values
+     * @param int, $gameId, simply the id of the game we want to save the scores to
+     * @return int, the $gameId
+     */
+    public function saveUsersScore(array $players, int $gameId) : int
+    {
+        // loop throught all players to save the score of each one of them
+        foreach($players as $player){
+
+            // get user Model, userfull to retrive user'id later on
+            $playerModel = User::where('username', $player['userName'])->first();
+            
+            // prevent from saving if the User is not found
+            if($playerModel === null) continue;
+
+            // update user score to the database
+            DB::table('game_user')
+            ->where('game_id', '=', $gameId)
+            ->where('user_id', '=', $playerModel->getId())
+            ->update(['score' => $player['score']]);
+        }
+
+        return $gameId;
+    }
 }
