@@ -95,7 +95,7 @@ class GameRepository {
         FROM game_user
         JOIN games ON games.id = game_user.game_id
         JOIN users ON users.id = games.user_creator_id
-        WHERE games.status != 3 AND games.id IN (
+        WHERE games.status = 1 OR games.status = 2 AND games.id IN (
             SELECT game_id 
             FROM game_user
             WHERE user_id = ?
