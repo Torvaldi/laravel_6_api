@@ -13,11 +13,10 @@ class GameRepository {
 
     public function isUserInGame($userId) : bool
     {
-        //$totalUserCurrentgames = GameUser::select('id')->where('user_id', $userId)->where('status', '!=', 3)->count();
         $sql = "SELECT game_user.user_id
         FROM games
         JOIN game_user ON game_user.game_id = games.id
-        WHERE games.status != 3 AND game_user.user_id = ?";
+        WHERE games.status = 1 OR games.status = 2 AND game_user.user_id = ?";
 
         $totalUserCurrentgames = DB::select($sql, [$userId]);
 
@@ -95,7 +94,7 @@ class GameRepository {
         FROM game_user
         JOIN games ON games.id = game_user.game_id
         JOIN users ON users.id = games.user_creator_id
-        WHERE games.status != 3 AND games.id IN (
+        WHERE games.status = 1 OR games.status = 2 AND games.id IN (
             SELECT game_id 
             FROM game_user
             WHERE user_id = ?
