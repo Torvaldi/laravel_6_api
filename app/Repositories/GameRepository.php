@@ -90,6 +90,15 @@ class GameRepository {
 
     public function getUserRunningGame(int $userId) : ?array
     {
+        // check if the user has any game in the game_user table
+        $sqlGameUser = "SELECT game_id FROM game_user WHERE user_id = ?";
+
+        $gameUser = DB::select($sqlGameUser, [$userId]);
+
+        // if he doesin't have any game, return null
+        if(count($gameUser) === 0) return null;
+
+        // check if the user is actually part of a game that is waiting for player or running
         $sql = "SELECT games.id, username as creator, level, answer, score_to_win, games.created_at, games.updated_at, status, count(game_user.user_id) as total_player
         FROM game_user
         JOIN games ON games.id = game_user.game_id
@@ -104,6 +113,7 @@ class GameRepository {
 
         $games = DB::select($sql, [$userId]);
 
+        // if there aren't any game return null
         if(count($games) <= 0){
             return null;
         }
