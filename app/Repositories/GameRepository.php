@@ -34,6 +34,7 @@ class GameRepository {
         $game->level = $request->input('level');
         $game->answer = $request->input('answer');
         $game->score_to_win = $request->input('score_to_win');
+        $game->musicType = $request->input('musicType');
         $game->save();
 
          // save to the relationship table
@@ -74,7 +75,7 @@ class GameRepository {
     public function getGameByStatus(int $statusId) : array
     {
         $sql = "SELECT 
-        games.id, user_creator_id, username as creator, status, level, answer, games.created_at, games.updated_at, score_to_win, count(game_user.user_id) as total_player
+        games.id, user_creator_id, username as creator, status, level, answer, musicType, games.created_at, games.updated_at, score_to_win, count(game_user.user_id) as total_player
         FROM games
         JOIN game_user ON game_user.game_id = games.id
         JOIN users ON users.id = games.user_creator_id
@@ -99,7 +100,7 @@ class GameRepository {
         if(count($gameUser) === 0) return null;
 
         // check if the user is actually part of a game that is waiting for player or running
-        $sql = "SELECT games.id, username as creator, level, answer, score_to_win, games.created_at, games.updated_at, status, count(game_user.user_id) as total_player
+        $sql = "SELECT games.id, username as creator, level, answer, musicType, score_to_win, games.created_at, games.updated_at, status, count(game_user.user_id) as total_player
         FROM game_user
         JOIN games ON games.id = game_user.game_id
         JOIN users ON users.id = games.user_creator_id

@@ -25,19 +25,25 @@ class AnimeController extends Controller
     public function index(Request $request) : Response
     {
         // validator
-        $validator = Validator::make($request->all(), ['level' => 'required|numeric|min:1|max:3']);
+        $validator = Validator::make($request->all(), [
+            'level' => 'required|numeric|min:1|max:3',
+            'musicType' => 'required|numeric|min:0|max:2'
+        ]);
 
         if($validator->fails()){
             return response()->json(["error" => $validator->errors()->all()], 400);
         }
 
         // get animes
-        $level = $request->input('level');
-        $animes = $this->animeRepository->getAllByLevel($level);
-
+        $level = (int) $request->input('level');
+        $musicType = (int) $request->input('musicType');
+        
+        if($musicType !== 0 && $musicType !== 1){
+            $animes = $this->animeRepository->getAllByLevel($level);
+        } else {
+            $animes = $this->animeRepository->getAll($level, $musicType);
+        }
         // return animes
         return response()->json($animes, 200);
-
-
     }
 }

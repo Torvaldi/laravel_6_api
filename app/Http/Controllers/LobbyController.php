@@ -37,7 +37,8 @@ class LobbyController extends Controller {
         $rules = [
             'level' => 'required|numeric|min:1|max:3',
             'answer' => 'required|numeric|min:5|max:15',
-            'score_to_win' => 'required|numeric|min:10|max:500'
+            'score_to_win' => 'required|numeric|min:10|max:500',
+            'musicType' => 'required|numeric|min:0|max:2'
         ];
 
         $validator = Validator::make($request->all(), $rules);
