@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Services\JwtService;
 use Symfony\Component\HttpFoundation\Response;
 use App\Repositories\GameRepository;
-use App\User;
 use Validator;
 
 class LobbyController extends Controller {
@@ -37,7 +36,8 @@ class LobbyController extends Controller {
         $rules = [
             'level' => 'required|numeric|min:1|max:3',
             'answer' => 'required|numeric|min:5|max:15',
-            'score_to_win' => 'required|numeric|min:10|max:500'
+            'score_to_win' => 'required|numeric|min:10|max:300',
+            'musicType' => 'required|numeric|min:0|max:2'
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -86,7 +86,7 @@ class LobbyController extends Controller {
      * 2: Running
      * 3: Finish
      */
-    public function getGamesByStatus(Request $request) 
+    public function getGamesByStatus(Request $request) : Response
     {
         // Validator rules
         $rules = ['id' => 'required|numeric|min:1|max:3'];

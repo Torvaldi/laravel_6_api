@@ -4,12 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\JwtService;
-use \Firebase\JWT\JWT;
 use Illuminate\Support\Facades\Hash;
 use App\User;
 use App\Repositories\UserRepository;
-use App\Http\Resources\User as UserResource;
 use Validator;
+use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
 {
@@ -28,7 +27,7 @@ class AuthController extends Controller
      * @return json user data in json, (id, name and email)
      * Route : /api/register
      */
-    public function register(Request $request)
+    public function register(Request $request) : Response
     {
         // check password confirmation
         if($request->input('password') !== $request->input('password_confirmation')){
@@ -81,7 +80,7 @@ class AuthController extends Controller
      * @param Request $request (username, password)
      * Route api/login
      */
-    public function login(Request $request)
+    public function login(Request $request): Response
     {
         // validate request
         $rules = [
@@ -119,7 +118,7 @@ class AuthController extends Controller
      * @param Request $request, oldPassword, newPassword, confirmNewPassword
      * Route api/password
      */
-    public function editPassword(Request $request)
+    public function editPassword(Request $request) : Response
     {
         $rules = [
             'oldPassword' => 'required|string|min:4|max:10',
