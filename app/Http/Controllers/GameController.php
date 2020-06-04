@@ -78,7 +78,7 @@ class GameController extends Controller
     /**
      * Auth user leave an unfinised game
      */
-    public function userLeaveGame(Request $request) 
+    public function userLeaveGame(Request $request) : Response
     {
         // validator
         $validator = Validator::make($request->all(), [
@@ -103,7 +103,7 @@ class GameController extends Controller
         return response()->json(['game_id', $gameId]);
     }
 
-    public function userSaveScore(Request $request)
+    public function userSaveScore(Request $request): Response
     {
         // validator
         $validator = Validator::make($request->all(), [
@@ -125,4 +125,6 @@ class GameController extends Controller
         // send back user id
         return response()->json(['gameId' => $gameId]); 
     }
+
+
 }
