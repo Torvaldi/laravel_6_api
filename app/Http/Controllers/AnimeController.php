@@ -38,12 +38,21 @@ class AnimeController extends Controller
         $level = (int) $request->input('level');
         $musicType = (int) $request->input('musicType');
         
+        /**
+         * Note music type
+         * 0 : opening
+         * 1 : ending
+         * 2 : all
+         */
+
+        // if music type is not opening or ending, ge musics only with the level value
         if($musicType !== 0 && $musicType !== 1){
             $animes = $this->animeRepository->getAllByLevel($level);
+            
         } else {
             $animes = $this->animeRepository->getAll($level, $musicType);
         }
-        // return animes
+        
         return response()->json($animes, 200);
     }
 }
