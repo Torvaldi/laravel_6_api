@@ -27,7 +27,7 @@ class AnimeController extends Controller
         // validator
         $validator = Validator::make($request->all(), [
             'level' => 'required|numeric|min:1|max:3',
-            'musicType' => 'required|numeric|min:0|max:2'
+            'musicType' => 'required|numeric|min:1|max:3'
         ]);
 
         if($validator->fails()){
@@ -40,17 +40,18 @@ class AnimeController extends Controller
         
         /**
          * Note music type
-         * 0 : opening
-         * 1 : ending
-         * 2 : all
+         * 1: all
+         * 2: opening
+         * 3: ending 
          */
 
-        // if music type is not opening or ending, ge musics only with the level value
-        if($musicType !== 0 && $musicType !== 1){
+        // if music type is 1, get all animes's musicby level, regardless of the op and end
+        if($musicType === 1){
             $animes = $this->animeRepository->getAllByLevel($level);
-            
-        } else {
-            $animes = $this->animeRepository->getAll($level, $musicType);
+        } else if($musicType === 2){ // opening
+            $animes = $this->animeRepository->getAll($level, 0); // 0 is the tiny int value for opening in the databse
+        } else { // ending 
+            $animes = $this->animeRepository->getAll($level, 1);// 1 is the tiny int value for ending in the databse
         }
         
         return response()->json($animes, 200);
