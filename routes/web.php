@@ -30,13 +30,12 @@ Route::group(['middleware' => ['token']], function(){
 
     Route::get('/api/game.user.running', 'LobbyController@getUserRunningGame');
 
-
-
+    
     Route::get('/api/game.user', 'GameController@getGamePlayers');
 
     Route::put('/api/game.status', 'GameController@updateGameStatus');
 
-    Route::delete('/api/game.user.leave', 'GameController@userLeaveGame');
+    //Route::delete('/api/game.user.leave', 'GameController@userLeaveGame'); dead route
 
     Route::get('/api/anime.index', 'AnimeController@index');
 

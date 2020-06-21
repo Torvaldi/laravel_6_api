@@ -7,16 +7,18 @@ use Symfony\Component\HttpFoundation\Response;
 use App\Services\JwtService;
 use App\Repositories\AnimeRepository;
 use Validator;
+use App\Services\Formatter;
 
 class AnimeController extends Controller
 {
     public $jwt;
     public $animeRepository;
 
-    public function __construct(JwtService $jwt, AnimeRepository $animeRepository)
+    public function __construct(JwtService $jwt, AnimeRepository $animeRepository, Formatter $formatter)
     {
         $this->jwt = $jwt;
         $this->animeRepository = $animeRepository;
+        $this->formatter = $formatter;
     }
 
     /**
@@ -53,7 +55,9 @@ class AnimeController extends Controller
         } else { // ending 
             $animes = $this->animeRepository->getAll($level, 1);// 1 is the tiny int value for ending in the databse
         }
+
+        $formatedAnime = $this->formatter->formatAnime($animes);
         
-        return response()->json($animes, 200);
+        return response()->json($formatedAnime, 200);
     }
 }
