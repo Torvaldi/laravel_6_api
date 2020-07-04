@@ -30,8 +30,7 @@ Route::group(['middleware' => ['token']], function(){
 
     Route::get('/api/game.user.running', 'LobbyController@getUserRunningGame');
 
-
-
+    
     Route::get('/api/game.user', 'GameController@getGamePlayers');
 
     Route::put('/api/game.status', 'GameController@updateGameStatus');
