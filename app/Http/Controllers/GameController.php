@@ -55,7 +55,7 @@ class GameController extends Controller
         // validator
         $validator = Validator::make($request->all(), [
             'id' => 'required|numeric',
-            'status' => 'required|numeric|min:1|max:3'
+            'status' => 'required|numeric|min:1|max:4'
         ]);
 
         if($validator->fails()){

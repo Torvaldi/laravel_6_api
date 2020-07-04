@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\GameUser;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
+use App\Services\DateService;
 
 class GameRepository {
 
@@ -37,9 +38,15 @@ class GameRepository {
         $game->musicType = $request->input('musicType');
         $game->save();
 
-         // save to the relationship table
+        // save to the relationship table
+         
+        // retrive current timestamps
+        $dateService = new DateService();
+        $timestamps = $dateService->getCurrentTimestamps();
+        
+        // saving process
         $user = User::find($creatorId);
-        $game->user()->save($user, ['score' => 0]);
+        $game->user()->save($user, ['score' => 0, 'created_at' => $timestamps, 'updated_at' => $timestamps]);
         
 
         return $game;
