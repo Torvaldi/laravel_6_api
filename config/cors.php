@@ -1,5 +1,10 @@
 <?php
 
+$allowedOrigins = ['*'];
+if(env('APP_ENV') !== 'local'){
+  $allowedOrigins = ["https://guesstheanimeopening.com", "https://socket.guesstheanimeopening.com"];
+}
+
 return [
 
     /*
@@ -31,7 +36,7 @@ return [
     /*
      * Matches the request origin. `[*]` allows all origins.
      */
-    'allowed_origins' => ['*'],
+    'allowed_origins' => $allowedOrigins,
 
     /*
      * Matches the request origin with, similar to `Request::is()`
